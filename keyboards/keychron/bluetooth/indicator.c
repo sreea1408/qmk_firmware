@@ -31,7 +31,11 @@
 #        include "rgb_matrix.h"
 #    endif
 #    include "i2c_master.h"
-#    include "bat_level_animation.h"
+#    ifdef BAT_LEVEL_STATIC
+#        include "bat_level_static.h"
+#    else
+#        include "bat_level_animation.h"
+#    endif
 #    include "eeprom.h"
 #endif
 
@@ -465,7 +469,11 @@ void indicator_battery_low(void) {
 }
 
 void indicator_task(void) {
+#ifdef BAT_LEVEL_STATIC
+    bat_level_static_task();
+#else
     bat_level_animiation_task();
+#endif
 
     if (indicator_config.value && sync_timer_elapsed32(indicator_timer_buffer) >= next_period) {
         indicator_timer_cb((void *)&type);
@@ -529,9 +537,15 @@ bool LED_INDICATORS_KB(void) {
                 SET_LED_OFF(LOW_BAT_IND_INDEX);
         }
 #    endif
+#    ifdef BAT_LEVEL_STATIC
+        if (bat_level_static_actived()) {
+            bat_level_static_indicate();
+        }
+#    else
         if (bat_level_animiation_actived()) {
             bat_level_animiation_indicate();
         }
+#    endif
         static uint8_t last_host_index = 0xFF;
 
         if (indicator_config.value) {

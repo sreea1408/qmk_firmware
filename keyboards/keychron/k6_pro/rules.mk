@@ -4,6 +4,7 @@ OPT_DEFS += -DNO_USB_STARTUP_CHECK -DENABLE_FACTORY_TEST
 
 SRC += matrix.c
 
+export BAT_LEVEL_STATIC=y
 include keyboards/keychron/bluetooth/bluetooth.mk
 
 

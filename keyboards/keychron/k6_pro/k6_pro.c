@@ -21,7 +21,11 @@
 #    include "indicator.h"
 #    include "transport.h"
 #    include "battery.h"
-#    include "bat_level_animation.h"
+#    ifdef BAT_LEVEL_STATIC
+#        include "bat_level_static.h"
+#    else
+#        include "bat_level_animation.h"
+#    endif
 #    include "lpm.h"
 #endif
 
@@ -119,7 +123,11 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             break;
         case BAT_LVL:
             if (get_transport() == TRANSPORT_BLUETOOTH && !usb_power_connected()) {
+#    ifdef BAT_LEVEL_STATIC
+                bat_level_static_start(battery_get_percentage());
+#    else
                 bat_level_animiation_start(battery_get_percentage());
+#    endif
             }
             break;
 #endif

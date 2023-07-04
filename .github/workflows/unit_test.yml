@@ -8,6 +8,7 @@ on:
     branches:
     - master
     - develop
+    - custom
   pull_request:
     paths:
     - 'builddefs/**'
